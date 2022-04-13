@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { ContactsForm } from "components/Form/Form";
+import { ContactsList } from "./ContactsList/ContactsList";
+import { SearchingFilter } from "./SearchingFilter/SearchingFilter";
 
 export class App extends Component  {
   state = {
@@ -13,19 +15,18 @@ export class App extends Component  {
   }
   
 
-onAddNewContact= (dataForNewContact) => {
-  const namesList = this.state.contacts.map(item => item.name.toLocaleLowerCase());
-  const addedName = dataForNewContact.name.toLocaleLowerCase();
+  onAddNewContact = (dataForNewContact) => {
+    const namesList = this.state.contacts.map(item => item.name.toLocaleLowerCase());
+    const addedName = dataForNewContact.name.toLocaleLowerCase();
 
-  if (namesList.includes(addedName)) {
-    return alert(`${dataForNewContact.name} is already in contacts`)
-  } else {
-    this.setState(oldState => {
-      return {contacts: [...oldState.contacts, dataForNewContact]}
-    });
-  }
-};
-
+    if (namesList.includes(addedName)) {
+      return alert(`${dataForNewContact.name} is already in contacts`)
+    } else {
+      this.setState(oldState => {
+        return {contacts: [...oldState.contacts, dataForNewContact]}
+      });
+    }
+  };
   onFilterChange = (event) => {
     this.setState({filter: event.target.value})
   }
@@ -37,38 +38,19 @@ onAddNewContact= (dataForNewContact) => {
     });
   }
 
-  contactsRender = () => {
-    return this.state.contacts.map(item => {
-      if(item.name.toLowerCase().includes(this.state.filter)) {
-        return (
-          <li key={item.id} id={item.id}>
-              {item.name}: {item.number}
-              <button type="button" onClick={() => {
-                this.onDeleteContact(item.id)
-              }}>Delete</button>
-          </li>
-        )
-      } else {
-        return ''
-      }
-      
-    })
-  }
+  
 
   render () {
   
     return (
       <>
-        
+        <h1>Phonebook</h1>
         <ContactsForm onAddNewContact={this.onAddNewContact}/>
-        <label>
-          Find contacts by Name
-          <input onChange={this.onFilterChange}></input>
-        </label>
+        
         <h1>Contacts</h1>
-        <ul>
-          {this.contactsRender()}
-        </ul>
+        <SearchingFilter onFilterAction={this.onFilterChange}/>
+        <ContactsList data={this.state} actions={this.onDeleteContact}/>
+        
       </>
       
     )
